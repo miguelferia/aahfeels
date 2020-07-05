@@ -2,6 +2,7 @@ from flask import Flask, render_template, flash, request
 from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
 from gensim.models import Word2Vec
 import numpy as np
+import re
 
 
 app = Flask(__name__)
@@ -55,11 +56,11 @@ def hello():
 def my_form_post():
     text = request.form['text']
     text = clean_string(text)
-    a = np.array([model[word] for word in textin if word in model.vocab])
+    a = np.array([model[word] for word in text if word in model.vocab])
     b = np.average(a, axis = 0)
 
     returnvector = np.absolute(np.rint(b*100))
-    return render_template('vectorviz.html', len_v = len(vec), v = repr(returnvector)[7:-17].replace('\n',''))
+    return render_template('vectorviz.html', len_v = len(returnvector), v = repr(returnvector)[7:-17].replace('\n',''))
     
 
 if __name__ == "__main__":
@@ -67,4 +68,4 @@ if __name__ == "__main__":
     model_tl = Word2Vec.load("model20191210/model20191210.model") #tagalog
     print('model loaded.')
     model = model_tl.wv
-    app.run(host="0.0.0.0", port=80)
+    app.run(host="0.0.0.0", port=5000)
