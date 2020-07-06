@@ -2,36 +2,121 @@
   <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/p5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/addons/p5.dom.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/addons/p5.sound.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/addons/p5.sound.min.js"></script> -->
+    <!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
+
+    <style>
+
+      /*To center (horizontally and vertically) the contents of the div*/
+      div {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+      }
+      
+      body {
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+      }
+      
+      #p5canvas {
+        margin:0;
+        /* background-color: #BBACC1; */
+        /* background:linear-gradient(135deg, #BBACC1 0%,  #F7D1CD 75%); */
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      </style>
   </head>
   <body>
+  
+    <div class='row'>
+      <div id='p5canvas'>
+      </div>
+    </div>
+
     <script>
+      // Data
+
+      // Vis settings
+      const reducer = (accumulator, currentValue) => accumulator + currentValue;
+      var dataStar = [{{ v }}];
+      var dataGradient = [{{ bg }}];
+      var divide;
+      var bgValues = [];
+      console.log(dataGradient);
+
+      divide = Math.floor((dataGradient.length - 1) / 10);
+
+      while (dataGradient.length > 0) {
+        bgValues.push(dataGradient.splice(0, divide));
+      }
+
+      bgValues = bgValues.map(function(numArray) {
+        return numArray.reduce(reducer);
+      });
+
+      // linearGradient settings
+      var i = 0;
+      const Y_AXIS = 1;
+      const X_AXIS = 2;
+      let c, b2, c1, c2;
+
       function setup() {
-        createCanvas(800, 800);
+        var width = displayWidth;
+        var height = displayHeight;
+        var canvas = createCanvas(width, height);
+        canvas.parent('p5canvas');
+
+        b1 = color(abs(bgValues[0]), abs(bgValues[1]), abs(bgValues[2]));
+        b2 = color(abs(bgValues[3]), abs(bgValues[4]), abs(bgValues[5]));
+        // c1 = color(bgValues[94], bgValues[95], bgValues[96]);
+        // c2 = color(bgValues[97], bgValues[98], bgValues[99]);
+
+        // dim = width / 2;
+        // colorMode(HSB, 360, 100, 100);
+        // ellipseMode(RADIUS);
+        // frameRate(1);
+
+        noStroke();
+        noLoop(); // Run once and stop
       }
 
       function draw() {
-        background(102);
+        // Background
+        linearGradient(0, 0, width / 2, height, b1, b2, X_AXIS);
+        linearGradient(width / 2, 0, width / 2, height, b2, b1, X_AXIS);
+        // Foreground
+        // linearGradient(50, 90, 540, 80, c1, c2, Y_AXIS);
+        // linearGradient(50, 190, 540, 80, c2, c1, X_AXIS);
 
+        // radialGradient(dim, height / 2);
         push();
+
         translate(width * 0.5, height * 0.5);
         star(0, 0, 2, 3, {{ len_v }});
         pop();
       }
 
-      let v = [{{ v }}]
-      console.log(v)
+      
 
       function star(x, y, radius1, radius2, npoints) {
+        let t = floor(random(0, 11));
+        let u = floor(random(0, 11));
+        let v = floor(random(0, 11));
         let angle = TWO_PI / npoints;
         let halfAngle = angle / 2.0;
+
+        stroke(abs(bgValues[t]), abs(bgValues[u]), abs(bgValues[v]));
         beginShape();
         let i = 0;
         for (let a = 0; a < TWO_PI; a += angle) {
           let sx = x + cos(a) * radius2;
           let sy = y + sin(a) * radius2;
-          vertex(v[i]*sx, v[i]*sy);
+          vertex(dataStar[i]*sx, dataStar[i]*sy);
           sx = x + cos(a + halfAngle) * radius1;
           sy = y + sin(a + halfAngle) * radius1;
           vertex(sx, sy);
@@ -39,6 +124,42 @@
         }
         endShape(CLOSE);
       }
+
+      function linearGradient(x, y, w, h, c1, c2, axis) {
+        noFill();
+
+        if (axis === Y_AXIS) {
+          // Top to bottom gradient
+          for (let i = y; i <= y + h; i++) {
+            let inter = map(i, y, y + h, 0, 1);
+            let c = lerpColor(c1, c2, inter);
+            stroke(c);
+            line(x, i, x + w, i);
+          }
+          
+        } else if (axis === X_AXIS) {
+          // Left to right gradient
+          for (let i = x; i <= x + w; i++) {
+            let inter = map(i, x, x + w, 0, 1);
+            let c = lerpColor(c1, c2, inter);
+            stroke(c);
+            line(i, y, i, y + h);
+          }
+        }
+      }
+
+      // function radialGradient(x, y) {
+      //   let radius = dim / 4;
+      //   let h = random(0, 11);
+      //   let i = random(0, 11);
+      //   let j = random(0, 11);
+      //   for (let r = radius; r > 0; --r) {
+      //     fill(abs(bgValues[h]), abs(bgValues[i]), abs(bgValues[j]));
+      //     ellipse(x, y, r, r);
+      //     h = (h + 1) % 360;
+      //   }
+      // }
+
     </script>
   </body>
 </html>
