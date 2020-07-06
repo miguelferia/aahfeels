@@ -68,4 +68,4 @@ if __name__ == "__main__":
     model_tl = Word2Vec.load("model20191210/model20191210.model") #tagalog
     print('model loaded.')
     model = model_tl.wv
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=80)
