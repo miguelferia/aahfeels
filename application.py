@@ -60,7 +60,8 @@ def my_form_post():
     b = np.average(a, axis = 0)
 
     returnvector = np.absolute(np.rint(b*100))
-    return render_template('vectorviz.html', len_v = len(returnvector), v = repr(returnvector)[7:-17].replace('\n',''))
+    bgvector = np.rint(b*100)
+    return render_template('vectorviz.html', len_v = len(returnvector), v = repr(returnvector)[7:-17].replace('\n',''), bg = repr(bgvector)[7:-17].replace('\n',''))
     
 
 if __name__ == "__main__":
