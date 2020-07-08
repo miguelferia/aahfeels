@@ -3,6 +3,7 @@ from wtforms import Form, TextField, TextAreaField, validators, StringField, Sub
 from gensim.models import Word2Vec
 import numpy as np
 from sklearn.decomposition import PCA
+from sklearn.preprocessing import MinMaxScaler
 import re
 
 
@@ -63,22 +64,29 @@ def my_form_post():
     input_vector = np.average(input_vector, axis = 0)
     star_vector = np.absolute(np.rint(input_vector*100))
 
+
+
     #color3
-    color_vector3 = np.vstack((text1a, input_vector))
-    color_vector3 = pca3.fit_transform(color_vector3)[-1]
-    color_vector3 = np.absolute(np.rint(color_vector3*100))
+    matrix_to_pca3 = np.vstack((text1a, input_vector))
+    matrix_pca3 = pca3.fit_transform(matrix_to_pca3)
+    scaler = MinMaxScaler(feature_range=(0, 255)).fit(matrix_pca3)
+    color_vector3 = np.rint(scaler.transform([matrix_pca3[-1]]))
 
 
     #color6
-    color_vector6 = np.vstack((text2a, input_vector))
-    color_vector6 = pca6.fit_transform(color_vector6)[-1]
-    color_vector6 = np.absolute(np.rint(color_vector6*100))
+    matrix_to_pca6 = np.vstack((text2a, input_vector))
+    matrix_pca6 = pca6.fit_transform(matrix_to_pca6)
+    scaler = MinMaxScaler(feature_range=(0, 255)).fit(matrix_pca6)
+    color_vector6 = np.rint(scaler.transform([matrix_pca6[-1]]))
+
+    print(color_vector3)
+    print(color_vector6)
 
     return render_template('vectorviz.html', 
                             len_v = 100, 
                             v = repr(star_vector)[7:-17].replace('\n',''), 
-                            bg3 = repr(color_vector6)[7:-17].replace('\n',''),
-                            bg6 = repr(color_vector3)[7:-17].replace('\n',''))
+                            bg3 = repr(color_vector3)[8:-3].replace('\n',''),
+                            bg6 = repr(color_vector6)[8:-3].replace('\n',''))
     
 
 if __name__ == "__main__":
