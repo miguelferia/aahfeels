@@ -66,12 +66,13 @@ def my_form_post():
     #color3
     color_vector3 = np.vstack((text1a, input_vector))
     color_vector3 = pca3.fit_transform(color_vector3)[-1]
-    color_vector3 = np.rint(color_vector3*100)
+    color_vector3 = np.absolute(np.rint(color_vector3*100))
+
 
     #color6
     color_vector6 = np.vstack((text2a, input_vector))
     color_vector6 = pca6.fit_transform(color_vector6)[-1]
-    color_vector6 = np.rint(color_vector6*100)
+    color_vector6 = np.absolute(np.rint(color_vector6*100))
 
     return render_template('vectorviz.html', 
                             len_v = 100, 
@@ -88,13 +89,13 @@ if __name__ == "__main__":
     pca6 = PCA(n_components=6)
     pca3 = PCA(n_components=3)
 
-    with open('nakpilessay.txt', 'r') as f:
+    with open('textfiles/nakpilessay.txt', 'r') as f:
         text1 = f.read()
     text1 = text1.lower()
     text1 = re.sub(re.compile('[^a-z\ ]'), '', text1).split()
 
-    with open('ninoyessay.txt', 'r') as f:
-        text2 = f.reaad()
+    with open('textfiles/ninoyessay.txt', 'r') as f:
+        text2 = f.read()
     text2 = text2.lower()
     text2 = re.sub(re.compile('[^a-z\ ]'), '', text2).split()
 
