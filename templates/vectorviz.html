@@ -44,20 +44,17 @@
       // Vis settings
       const reducer = (accumulator, currentValue) => accumulator + currentValue;
       var dataStar = [{{ v }}];
-      var dataGradient = [{{ bg }}];
+      var dataGradient3 = [{{ bg3 }}];
+      var dataGradient6 = [{{ bg6 }}];
       var divide;
       var bgValues = [];
-      console.log(dataGradient);
+      console.log(dataStar);
+      console.log(dataGradient3);
+      console.log(dataGradient6);
 
-      divide = Math.floor((dataGradient.length - 1) / 10);
 
-      while (dataGradient.length > 0) {
-        bgValues.push(dataGradient.splice(0, divide));
-      }
-
-      bgValues = bgValues.map(function(numArray) {
-        return numArray.reduce(reducer);
-      });
+      bgValues3 = dataGradient3;
+      bgValues6 = dataGradient6;
 
       // linearGradient settings
       var i = 0;
@@ -71,8 +68,8 @@
         var canvas = createCanvas(width, height);
         canvas.parent('p5canvas');
 
-        b1 = color(abs(bgValues[0]), abs(bgValues[1]), abs(bgValues[2]));
-        b2 = color(abs(bgValues[3]), abs(bgValues[4]), abs(bgValues[5]));
+        b1 = color(abs(bgValues6[0]), abs(bgValues6[1]), abs(bgValues6[2]));
+        b2 = color(abs(bgValues6[3]), abs(bgValues6[4]), abs(bgValues6[5]));
         // c1 = color(bgValues[94], bgValues[95], bgValues[96]);
         // c2 = color(bgValues[97], bgValues[98], bgValues[99]);
 
@@ -104,13 +101,10 @@
       
 
       function star(x, y, radius1, radius2, npoints) {
-        let t = floor(random(0, 11));
-        let u = floor(random(0, 11));
-        let v = floor(random(0, 11));
         let angle = TWO_PI / npoints;
         let halfAngle = angle / 2.0;
 
-        stroke(abs(bgValues[t]), abs(bgValues[u]), abs(bgValues[v]));
+        stroke(abs(bgValue3[0]), abs(bgValues3[1]), abs(bgValues3[2]));
         beginShape();
         let i = 0;
         for (let a = 0; a < TWO_PI; a += angle) {
