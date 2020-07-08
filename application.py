@@ -31,30 +31,16 @@ def clean_string(input):
 class ReusableForm(Form):
     name = TextField('Name:', validators=[validators.required()])
 
-@app.route("/", methods=['GET'])
-def welcome():
-    return "Hi jenny!!!!"
+# @app.route("/", methods=['GET'])
+# def welcome():
+#     return "Hi jenny!!!!"
 
-@app.route("/vector", methods=['GET'])
-def vector():
-    word = request.args.get("word")
-    return str(model[word])
 
-@app.route("/radii", methods=['GET'])
-def radii():
-    word = request.args.get("word")
-    vec = model[word]
-    return str(np.rint(vec*100))
-
-@app.route("/page")
-def page():
-    return render_template('index.html')
-
-@app.route("/form")
+@app.route("/")
 def hello():
     return render_template('get_text.html')
 
-@app.route('/form', methods=['POST'])
+@app.route('/', methods=['POST'])
 def my_form_post():
     text = request.form['text']
     text = clean_string(text)
@@ -63,9 +49,7 @@ def my_form_post():
     input_vector = np.array([model[word] for word in text if word in model.vocab])
     input_vector = np.average(input_vector, axis = 0)
     star_vector = np.absolute(np.rint(input_vector*100))
-
-
-
+    
     #color3
     matrix_to_pca3 = np.vstack((text1a, input_vector))
     matrix_pca3 = pca3.fit_transform(matrix_to_pca3)
@@ -109,4 +93,4 @@ if __name__ == "__main__":
 
     text1a = np.array([model[word] for word in text1 if word in model.vocab])
     text2a = np.array([model[word] for word in text2 if word in model.vocab])
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=80)
